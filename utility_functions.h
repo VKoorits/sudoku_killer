@@ -3,7 +3,7 @@
 
 using namespace std;
 
-//служебные функции
+//СЃР»СѓР¶РµР±РЅС‹Рµ С„СѓРЅРєС†РёРё
 void delete_from_arr(int *this_variants, int num){
     if(*(this_variants)!=0){
         int i=1;
@@ -26,20 +26,20 @@ void searched_number(int *sudoku, int *variants, int i, int j, int num, int *cou
     *count_zero-=1;
     for(int b=0; b<10; b++)
         *(variants+90*i+10*j+b)=0;
-    //просмотр столбца
+    //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚РѕР»Р±С†Р°
     for(int k=0; k<9; k++)
         if(*(sudoku+k*9+j)==0){
             delete_from_arr(variants+k*90+j*10, num);
         }
-    //просмотр строки
+    //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚СЂРѕРєРё
     for(int k=0; k<9; k++)
         if(*(sudoku+i*9+k)==0){
             delete_from_arr(variants+i*90+k*10, num);
         }
-    //определение квадрата 3*3 в котором находится рассматриваемая клетка(его верхнего левого угла)
+    //РѕРїСЂРµРґРµР»РµРЅРёРµ РєРІР°РґСЂР°С‚Р° 3*3 РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјР°СЏ РєР»РµС‚РєР°(РµРіРѕ РІРµСЂС…РЅРµРіРѕ Р»РµРІРѕРіРѕ СѓРіР»Р°)
     int x=(i/3)*3;
     int y=(j/3)*3;
-    //просмотр квадрата
+    //РїСЂРѕСЃРјРѕС‚СЂ РєРІР°РґСЂР°С‚Р°
     for(int a=x; a<x+3; a++)
         for(int b=y; b<y+3; b++)
             if(*(sudoku+a*9+b)==0){
@@ -48,12 +48,12 @@ void searched_number(int *sudoku, int *variants, int i, int j, int num, int *cou
 }
 bool search_in_arr(int *this_variants, int num, int i, int incrementer){
     for(int j=0; j<9; j++)
-        if(*(this_variants+j*incrementer+i)==num)//найден элемент
+        if(*(this_variants+j*incrementer+i)==num)//РЅР°Р№РґРµРЅ СЌР»РµРјРµРЅС‚
             return true;
     return false;
 }
 
-//ввод/вывод информации
+//РІРІРѕРґ/РІС‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё
 void read_sudoku(int *sudoku, istream &fin, char file_or_cmd){
     int counter=0;
     int c;
@@ -109,40 +109,40 @@ void zapolnenie(const int *sudoku, int *variants, int *count_zero){
     char choose[9];
     int counter;
     int this_variants[9];
-    int x,y;//координаты верхнего левого угла
+    int x,y;//РєРѕРѕСЂРґРёРЅР°С‚С‹ РІРµСЂС…РЅРµРіРѕ Р»РµРІРѕРіРѕ СѓРіР»Р°
 
     for(int i=0; i<9; i++){
         for(int j=0; j<9; j++){
 
-            //рассматриваем по одной все клетки
+            //СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРј РїРѕ РѕРґРЅРѕР№ РІСЃРµ РєР»РµС‚РєРё
             if(*(sudoku+i*9+j)==0){
                 *count_zero+=1;
-                //заполняем массив истинами
+                //Р·Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РёСЃС‚РёРЅР°РјРё
                 for(int k=0; k<9; k++){
                     choose[k]='o';
                     this_variants[k]=0;
                 }
-                //обнуляем счетчик
+                //РѕР±РЅСѓР»СЏРµРј СЃС‡РµС‚С‡РёРє
                 counter=0;
 
-                //просмотр столбца
+                //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚РѕР»Р±С†Р°
                 for(int k=0; k<9; k++)
                     if((sudoku+k*9+j)!=0)
                         choose[*(sudoku+k*9+j)-1]='s';
-                //просмотр строки
+                //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚СЂРѕРєРё
                 for(int k=0; k<9; k++)
                     if((sudoku+i*9+k)!=0)
                         choose[*(sudoku+i*9+k)-1]='l';
-                //определение квадрата 3*3 в котором находится рассматриваемая клетка(его верхнего левого угла)
+                //РѕРїСЂРµРґРµР»РµРЅРёРµ РєРІР°РґСЂР°С‚Р° 3*3 РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјР°СЏ РєР»РµС‚РєР°(РµРіРѕ РІРµСЂС…РЅРµРіРѕ Р»РµРІРѕРіРѕ СѓРіР»Р°)
                 x=(i/3)*3;
                 y=(j/3)*3;
-                //просмотр квадрата
+                //РїСЂРѕСЃРјРѕС‚СЂ РєРІР°РґСЂР°С‚Р°
                 for(int a=x; a<x+3; a++)
                     for(int b=y; b<y+3; b++)
                         if(*(sudoku+a*9+b)!=0)
                             choose[*(sudoku+a*9+b)-1]='q';
 
-                //заполняем варианты
+                //Р·Р°РїРѕР»РЅСЏРµРј РІР°СЂРёР°РЅС‚С‹
                 for(int k=0; k<9; k++)
                     if(choose[k]=='o'){
                         counter++;
