@@ -103,10 +103,8 @@ setlocale(0, "rus");
             level=reshenie(&sudoku[0][0], 1);
             if(level<6)
                 cout << "Данное судоку имеет " << level << " уровень сложгости" << endl;
-
         }
-
     }
-
 _getch();
+return 0;
 }
