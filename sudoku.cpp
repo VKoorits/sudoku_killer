@@ -14,10 +14,10 @@ setlocale(0, "rus");
     int level_sudoku(5);
     char menu;
 
-    do{//стартовое меню
-        cout << "\t\t*****СУДОКУ-МАСТЕР******\n\nвас приветсвует мастер-судоку. Выберите режим работы:" << endl;
-        cout << "1. Генерация судоку" << endl;
-        cout << "2. Решение судоку"  << endl;
+    do{//start menu
+        cout << "\t\t*****SUDOKU MASTER******\n\nHi, it`s sudoku master. Select a mode of operating:" << endl;
+        cout << "1. Create sudoku" << endl;
+        cout << "2. decision sudoku"  << endl;
         cin >> menu;
         system("cls");
         if(!cin >> menu || (menu!='1' && menu!='2')){
@@ -27,11 +27,11 @@ setlocale(0, "rus");
             break;
     }while(1);
 
-    if(menu=='1'){//генерация
+    if(menu=='1'){//generating
         menu='0';
         do{//level
-            cout << "\t\t*****СУДОКУ-МАСТЕР******\n\nГенерация судоку\nВыберите уровень сложности (от 1 до 5)" << endl;
-            cout << "Сложность судоку:\t";
+            cout << "\t\t*****SUDOKU MASTER******\n\nGenerating sudoku\nSelect difficulty level ( form 1 to 5)" << endl;
+            cout << "Difficulty level:\t";
             cin >> menu;
             system("cls");
             if(!cin >> menu || int(menu)>53 || int(menu)<49){
@@ -42,18 +42,18 @@ setlocale(0, "rus");
         }while(1);
 
         generator_sudoku(&sudoku[0][0], count_zero, int(menu)-48);
-        cout << "\t\t*****СУДОКУ-МАСТЕР******\n\n";
-        cout << "сгенерированное судоку " << int(menu)-48 << " уровня сложности " << endl;
+        cout << "\t\t*****SUDOKU MASTER******\n\n";
+        cout << "Is your sudoku a " << int(menu)-48 << " level of difficulty" << endl;
         write_sudoku(&sudoku[0][0]);
-        cout << "\nчтобы посмотреть решение судоку нажмите любую кнопку";
+        cout << "\nIf you want to see the answer for this sudoku pressany key";
 
         _getch();
         system("cls");
 
-        cout << "\t\t*****СУДОКУ-МАСТЕР******\n\n";
-        cout << "сгенерированное судоку " << int(menu)-48 << " уровня сложности " << endl;
+        cout << "\t\t*****SUDOKU MASTER******\n\n";
+        cout << "Genrating sudoku  a " << int(menu)-48 << " level of difficulty" << endl;
         write_sudoku(&sudoku[0][0]);
-        cout << "\nединственное решение этого судоку";
+        cout << "\nIt`s unique decusion for this sudoku";
         reshenie(&sudoku[0][0], 1);
 
     }
@@ -61,9 +61,9 @@ setlocale(0, "rus");
         menu='0';
         system("cls");
         do{
-            cout << "\t\t*****СУДОКУ-МАСТЕР******\nРешение судоку\n\nОткда получить судоку:\n";
-            cout << "1. Из файла" << endl;
-            cout << "2. С клавиатуры"  << endl;
+            cout << "\t\t*****SUDOKU MASTER******\nDecision sudoku\n\nGet sudoku from:\n";
+            cout << "1. File" << endl;
+            cout << "2. Keyboaerd"  << endl;
             cin >> menu;
             system("cls");
             if(!cin >> menu || (menu!='1' && menu!='2')){
@@ -77,7 +77,7 @@ setlocale(0, "rus");
             ifstream fin;
 
             do{
-            cout << "\t\t*****СУДОКУ-МАСТЕР******\nРешение судоку\n\nВведите адрес файла:\t";
+            cout << "\t\t*****SUDOKU MASTER******\nDecision sudoku\n\nEnter a path to file:\t";
             char filename[255];
             cin.getline(filename, 255);
             fin.open(filename);
@@ -85,7 +85,7 @@ setlocale(0, "rus");
             if(fin.is_open()){
                 read_sudoku(&sudoku[0][0], fin, 'f');
 
-                cout << "\t\t*****СУДОКУ-МАСТЕР******\nРешение судоку\n\nСудоку из файла";
+                cout << "\t\t*****SUDOKU MASTER******\nDecision sudoku\n\nSudoku from your file:";
                 write_sudoku(&sudoku[0][0]);
                 reshenie(&sudoku[0][0], 1);
                 break;
@@ -94,19 +94,16 @@ setlocale(0, "rus");
 
             }while(1);
         }else if(menu=='2'){
-            cout << "\t\t*****СУДОКУ-МАСТЕР******\nРешение судоку\n\nВвод с клавиатуры (Вводите строки судоку без пробелов)" << endl;
+            cout << "\t\t*****SUDOKU MASTER******\nDecision sudoku\n\nEnter from keyboard (Enter strings without space)" << endl;
             read_sudoku(&sudoku[0][0], cin, 'c');
             system("cls");
-            cout << "\t\t*****СУДОКУ-МАСТЕР******\nРешение судоку\n\nВведенное судоку";
+            cout << "\t\t*****SUDOKU MASTER******\nDecision sudoku\n\nEntered sudoku";
             write_sudoku(&sudoku[0][0]);
             int level;
             level=reshenie(&sudoku[0][0], 1);
             if(level<6)
-                cout << "Данное судоку имеет " << level << " уровень сложгости" << endl;
-
+                cout << "This is a sudoku a " << level << " level of difficulty" << endl;
         }
-
     }
-
 _getch();
 }
