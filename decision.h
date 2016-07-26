@@ -5,7 +5,6 @@
 #include "decision.h"
 #include "generator.h"
 
-
 int main(){
 setlocale(0, "rus");
     srand(time(NULL));
