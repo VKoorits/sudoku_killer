@@ -1,79 +1,79 @@
 #include"utility_functions.h"
 
-//способы решения
-char search_clear_numbers(int *sudoku, int *variants, int *count_zero){//поиск одиночек
+//СЃРїРѕСЃРѕР±С‹ СЂРµС€РµРЅРёСЏ
+char search_clear_numbers(int *sudoku, int *variants, int *count_zero){//РїРѕРёСЃРє РѕРґРёРЅРѕС‡РµРє
     char returner='f';
     for(int i=0; i<9; i++)
         for(int j=0; j<9; j++)
             if(*(variants+i*90+j*10)==1){
-                //если здесь наверняка это число
+                //РµСЃР»Рё Р·РґРµСЃСЊ РЅР°РІРµСЂРЅСЏРєР° СЌС‚Рѕ С‡РёСЃР»Рѕ
                 *(sudoku+i*9+j)=*(variants+i*90+j*10+1);
                 *(variants+i*90+j*10)=0;
-                searched_number(sudoku, variants, i, j, *(variants+i*90+j*10+1), count_zero);//вычеркивание в других клетках найденного числа
+                searched_number(sudoku, variants, i, j, *(variants+i*90+j*10+1), count_zero);//РІС‹С‡РµСЂРєРёРІР°РЅРёРµ РІ РґСЂСѓРіРёС… РєР»РµС‚РєР°С… РЅР°Р№РґРµРЅРЅРѕРіРѕ С‡РёСЃР»Р°
                 returner='t';
             }else if(*(variants+i*90+j*10)==0 && *(sudoku+i*9+j)==0){
-                //нет вариантов, но клетка пуста
+                //РЅРµС‚ РІР°СЂРёР°РЅС‚РѕРІ, РЅРѕ РєР»РµС‚РєР° РїСѓСЃС‚Р°
                 return 'e';
             }
     return returner;
 }
-char search_hidden_clear_numbers(int *sudoku, int *variants, int *count_zero){//поиск скрытых одиночек
+char search_hidden_clear_numbers(int *sudoku, int *variants, int *count_zero){//РїРѕРёСЃРє СЃРєСЂС‹С‚С‹С… РѕРґРёРЅРѕС‡РµРє
     char returner='f';
-    int count_this_num_in=0;//количество цифры poisk в строке столбце квадрате
-    //если count_this_num_in == 1, то есть скрытый одиночка
+    int count_this_num_in=0;//РєРѕР»РёС‡РµСЃС‚РІРѕ С†РёС„СЂС‹ poisk РІ СЃС‚СЂРѕРєРµ СЃС‚РѕР»Р±С†Рµ РєРІР°РґСЂР°С‚Рµ
+    //РµСЃР»Рё count_this_num_in == 1, С‚Рѕ РµСЃС‚СЊ СЃРєСЂС‹С‚С‹Р№ РѕРґРёРЅРѕС‡РєР°
     int x,y;//x=i(string); y=j(column)
 
-    for(int poisk=1; poisk <=9; poisk++){//поиск скрытых одиночек от 1 до 9
-        //просмотр строки
+    for(int poisk=1; poisk <=9; poisk++){//РїРѕРёСЃРє СЃРєСЂС‹С‚С‹С… РѕРґРёРЅРѕС‡РµРє РѕС‚ 1 РґРѕ 9
+        //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚СЂРѕРєРё
         for(int i=0; i<9; i++){
-            if(!search_in_arr(sudoku+i*9, poisk, 0, 1)){//если в строке нет еще числа poisk то рассматриваем i-тую строку
+            if(!search_in_arr(sudoku+i*9, poisk, 0, 1)){//РµСЃР»Рё РІ СЃС‚СЂРѕРєРµ РЅРµС‚ РµС‰Рµ С‡РёСЃР»Р° poisk С‚Рѕ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРј i-С‚СѓСЋ СЃС‚СЂРѕРєСѓ
                 count_this_num_in=0;
                 for(int j=0; j<9; j++)
-                    if(*(sudoku+i*9+j)==0 && search_in_arr(variants+i*90+j*10, poisk, 1, 1)){//усли в  i j клетку можно поставить poisk
+                    if(*(sudoku+i*9+j)==0 && search_in_arr(variants+i*90+j*10, poisk, 1, 1)){//СѓСЃР»Рё РІ  i j РєР»РµС‚РєСѓ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ poisk
                         count_this_num_in++;
                         x=i;
                         y=j;
                     }
-                if(count_this_num_in==1){//если это число можно поставить только в одно место строки, то стваим
+                if(count_this_num_in==1){//РµСЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РІ РѕРґРЅРѕ РјРµСЃС‚Рѕ СЃС‚СЂРѕРєРё, С‚Рѕ СЃС‚РІР°РёРј
                     *(sudoku+x*9+y)=poisk;
                     returner='t';
                     searched_number(sudoku, variants, x, y, poisk, count_zero);
                 }else if(count_this_num_in==0)
-                    return 'e';//в столбце нет такого числа и его нельзя никуда поставить
+                    return 'e';//РІ СЃС‚РѕР»Р±С†Рµ РЅРµС‚ С‚Р°РєРѕРіРѕ С‡РёСЃР»Р° Рё РµРіРѕ РЅРµР»СЊР·СЏ РЅРёРєСѓРґР° РїРѕСЃС‚Р°РІРёС‚СЊ
             }
         }//end string
 
-        //просмотр столбца
+        //РїСЂРѕСЃРјРѕС‚СЂ СЃС‚РѕР»Р±С†Р°
         for(int j=0; j<9; j++){
-            if(!search_in_arr(sudoku+j, poisk, 0, 9)){//если в строке нет еще числа poisk то рассматриваем i-тую строку
+            if(!search_in_arr(sudoku+j, poisk, 0, 9)){//РµСЃР»Рё РІ СЃС‚СЂРѕРєРµ РЅРµС‚ РµС‰Рµ С‡РёСЃР»Р° poisk С‚Рѕ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРј i-С‚СѓСЋ СЃС‚СЂРѕРєСѓ
                 count_this_num_in=0;
                 for(int i=0; i<9; i++)
-                    if(*(sudoku+i*9+j)==0 && search_in_arr(variants+i*90+j*10, poisk, 1, 1)){//усли в  i j клетку можно поставить poisk
+                    if(*(sudoku+i*9+j)==0 && search_in_arr(variants+i*90+j*10, poisk, 1, 1)){//СѓСЃР»Рё РІ  i j РєР»РµС‚РєСѓ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ poisk
                         count_this_num_in++;
                         x=i;
                         y=j;
                     }
-                if(count_this_num_in==1){//если это число можно поставить только в одно место строки, то стваим
+                if(count_this_num_in==1){//РµСЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РІ РѕРґРЅРѕ РјРµСЃС‚Рѕ СЃС‚СЂРѕРєРё, С‚Рѕ СЃС‚РІР°РёРј
                     *(sudoku+x*9+y)=poisk;
                     returner='t';
                     searched_number(sudoku, variants, x, y, poisk, count_zero);
                 }else if(count_this_num_in==0)
-                    return 'e';//в строке нет такого числа и его нельзя никуда поставить
+                    return 'e';//РІ СЃС‚СЂРѕРєРµ РЅРµС‚ С‚Р°РєРѕРіРѕ С‡РёСЃР»Р° Рё РµРіРѕ РЅРµР»СЊР·СЏ РЅРёРєСѓРґР° РїРѕСЃС‚Р°РІРёС‚СЊ
             }
         }//end column
 
-        //просмотр области
-        for(int i=0; i<3; i++)//большая строка
-            for(int j=0; j<3; j++){//большой столбец
+        //РїСЂРѕСЃРјРѕС‚СЂ РѕР±Р»Р°СЃС‚Рё
+        for(int i=0; i<3; i++)//Р±РѕР»СЊС€Р°СЏ СЃС‚СЂРѕРєР°
+            for(int j=0; j<3; j++){//Р±РѕР»СЊС€РѕР№ СЃС‚РѕР»Р±РµС†
                 count_this_num_in=0;
-                for(int a=0; a<3; a++)//маленькая строка
-                    for(int b=0; b<3; b++)//маленький столбец
-                        if(*(sudoku+(i*3+a)*9+(j*3+b))==0 && search_in_arr(variants+(i*3+a)*90+(j*3+b)*10, poisk, 1, 1)){//усли в клетку можно поставить poisk
+                for(int a=0; a<3; a++)//РјР°Р»РµРЅСЊРєР°СЏ СЃС‚СЂРѕРєР°
+                    for(int b=0; b<3; b++)//РјР°Р»РµРЅСЊРєРёР№ СЃС‚РѕР»Р±РµС†
+                        if(*(sudoku+(i*3+a)*9+(j*3+b))==0 && search_in_arr(variants+(i*3+a)*90+(j*3+b)*10, poisk, 1, 1)){//СѓСЃР»Рё РІ РєР»РµС‚РєСѓ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ poisk
                             count_this_num_in++;
                             x=i*3+a;
                             y=j*3+b;
                         }
-                if(count_this_num_in==1){//если это число можно поставить только в одно место области, то стваим
+                if(count_this_num_in==1){//РµСЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РІ РѕРґРЅРѕ РјРµСЃС‚Рѕ РѕР±Р»Р°СЃС‚Рё, С‚Рѕ СЃС‚РІР°РёРј
                     *(sudoku+x*9+y)=poisk;
                     returner='t';
                     searched_number(sudoku, variants, x, y, poisk, count_zero);
@@ -82,13 +82,13 @@ char search_hidden_clear_numbers(int *sudoku, int *variants, int *count_zero){//
     }//end poisk
     return returner;
 }
-char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в квадрате
+char search_candidate_in_square(int *sudoku, int *variants){//РїРѕРёСЃРє РєР°РЅРґРёС‚Р°С‚РѕРІ РІ РєРІР°РґСЂР°С‚Рµ
     char returner='f';
     int count_place=0, num_square[3]={-1,-1,-1};
 
     for(int poisk=1; poisk<10; poisk++){
     //int poisk=4, i=2;
-        //поиск кандитатов по строкам
+        //РїРѕРёСЃРє РєР°РЅРґРёС‚Р°С‚РѕРІ РїРѕ СЃС‚СЂРѕРєР°Рј
         for(int i=0; i<9; i++){
             if(!search_in_arr(sudoku+i*9, poisk, 0, 1)){
                 count_place=0;
@@ -96,12 +96,12 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
                 for(int j=0; j<9; j++)
                     if(search_in_arr(variants+i*90+j*10, poisk, 1, 1)){
                         count_place++;
-                        if(count_place==4)//4 числа строки не поместятся
+                        if(count_place==4)//4 С‡РёСЃР»Р° СЃС‚СЂРѕРєРё РЅРµ РїРѕРјРµСЃС‚СЏС‚СЃСЏ
                             break;
                         num_square[count_place-1]=i*3+j;
                     }
                 if(count_place!=4 && count_place>1 && num_square[0]==num_square[1] && (num_square[1]==num_square[2] || num_square[2]==-1)){
-                    //если все кандидаты в одном квадрате то удаляем кандидатов poisk из остальных клеток
+                    //РµСЃР»Рё РІСЃРµ РєР°РЅРґРёРґР°С‚С‹ РІ РѕРґРЅРѕРј РєРІР°РґСЂР°С‚Рµ С‚Рѕ СѓРґР°Р»СЏРµРј РєР°РЅРґРёРґР°С‚РѕРІ poisk РёР· РѕСЃС‚Р°Р»СЊРЅС‹С… РєР»РµС‚РѕРє
                     for(int x=(num_square[0]/3)*3; x<(num_square[0]/3)*3+3; x++)
                         for(int y=(num_square[0]%3)*3; y<(num_square[0]%3)*3+3; y++)
                             if(x!=i && *(sudoku+x*9+y)==0){
@@ -112,7 +112,7 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
             }
         }//end string
 
-        //поиск кандитатов по столбцам
+        //РїРѕРёСЃРє РєР°РЅРґРёС‚Р°С‚РѕРІ РїРѕ СЃС‚РѕР»Р±С†Р°Рј
         for(int j=0; j<9; j++){
             if(!search_in_arr(sudoku+j, poisk, 0, 9)){
                 count_place=0;
@@ -120,12 +120,12 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
                 for(int i=0; i<9; i++)
                     if(search_in_arr(variants+i*90+j*10, poisk, 1, 1)){
                         count_place++;
-                        if(count_place==4)//4 числа строки не поместятся
+                        if(count_place==4)//4 С‡РёСЃР»Р° СЃС‚СЂРѕРєРё РЅРµ РїРѕРјРµСЃС‚СЏС‚СЃСЏ
                             break;
                         num_square[count_place-1]=i*3+j;
                     }
                 if(count_place!=4 && count_place>1 && num_square[0]==num_square[1] && (num_square[1]==num_square[2] || num_square[2]==-1)){
-                    //если все кандидаты в одном квадрате то удаляем кандидатов poisk из остальных клеток
+                    //РµСЃР»Рё РІСЃРµ РєР°РЅРґРёРґР°С‚С‹ РІ РѕРґРЅРѕРј РєРІР°РґСЂР°С‚Рµ С‚Рѕ СѓРґР°Р»СЏРµРј РєР°РЅРґРёРґР°С‚РѕРІ poisk РёР· РѕСЃС‚Р°Р»СЊРЅС‹С… РєР»РµС‚РѕРє
                     for(int x=(num_square[0]/3)*3; x<(num_square[0]/3)*3+3; x++)
                         for(int y=(num_square[0]%3)*3; y<(num_square[0]%3)*3+3; y++)
                             if(y!=j && *(sudoku+x*9+y)==0){
@@ -136,29 +136,29 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
             }
         }//end column
 
-        //поиск кандидатов в области
-        for(int i=0; i<3; i++)//большая строка
-            for(int j=0; j<3; j++){//большой столбец
+        //РїРѕРёСЃРє РєР°РЅРґРёРґР°С‚РѕРІ РІ РѕР±Р»Р°СЃС‚Рё
+        for(int i=0; i<3; i++)//Р±РѕР»СЊС€Р°СЏ СЃС‚СЂРѕРєР°
+            for(int j=0; j<3; j++){//Р±РѕР»СЊС€РѕР№ СЃС‚РѕР»Р±РµС†
                 count_place=0;
                 int coordinate[2][3]={{-1,-1,-1},{-1,-1,-1}};//coordinate[0]->i; coordinate[1]->j
-                for(int a=0; a<3; a++)//маленькая строка
-                    for(int b=0; b<3; b++)//маленький столбец
-                        if(*(sudoku+(i*3+a)*9+(j*3+b))==0 && search_in_arr(variants+(i*3+a)*90+(j*3+b)*10, poisk, 1, 1)){//усли в клетку можно поставить poisk
+                for(int a=0; a<3; a++)//РјР°Р»РµРЅСЊРєР°СЏ СЃС‚СЂРѕРєР°
+                    for(int b=0; b<3; b++)//РјР°Р»РµРЅСЊРєРёР№ СЃС‚РѕР»Р±РµС†
+                        if(*(sudoku+(i*3+a)*9+(j*3+b))==0 && search_in_arr(variants+(i*3+a)*90+(j*3+b)*10, poisk, 1, 1)){//СѓСЃР»Рё РІ РєР»РµС‚РєСѓ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ poisk
                             count_place++;
-                            if(count_place<4){//4 числа строки не поместятся
+                            if(count_place<4){//4 С‡РёСЃР»Р° СЃС‚СЂРѕРєРё РЅРµ РїРѕРјРµСЃС‚СЏС‚СЃСЏ
                             coordinate[0][count_place-1]=i*3+a;
                             coordinate[1][count_place-1]=j*3+b;
                             }
                         }
-                if(count_place<4 && count_place>1){//если это число можно поставить только в одну строку/столбец области
-                    if(coordinate[0][0]==coordinate[0][1] && (coordinate[0][1]==coordinate[0][2] || coordinate[0][2]==-1)){//только в одной строке
+                if(count_place<4 && count_place>1){//РµСЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ РјРѕР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РІ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ/СЃС‚РѕР»Р±РµС† РѕР±Р»Р°СЃС‚Рё
+                    if(coordinate[0][0]==coordinate[0][1] && (coordinate[0][1]==coordinate[0][2] || coordinate[0][2]==-1)){//С‚РѕР»СЊРєРѕ РІ РѕРґРЅРѕР№ СЃС‚СЂРѕРєРµ
                         for(int x=0; x<9; x++)
                             if(x!=coordinate[1][0] && x!=coordinate[1][1] && (x!=coordinate[1][2] || coordinate[1][2]==-1))
                                 if(search_in_arr(variants+coordinate[0][0]*90+x*10, poisk, 1, 1)){
                                     delete_from_arr(variants+coordinate[0][0]*90+x*10, poisk);
                                     returner='t';
                                 }
-                                //cout << "В области" << coordinate[0][0]/3 << " " <<  coordinate[1][0]/3 <<  "  в строке " << coordinate[0][0] << " наверняка есть " << poisk   << "ъъъъъъъъъъъ"<< endl;
+                                //cout << "Р’ РѕР±Р»Р°СЃС‚Рё" << coordinate[0][0]/3 << " " <<  coordinate[1][0]/3 <<  "  РІ СЃС‚СЂРѕРєРµ " << coordinate[0][0] << " РЅР°РІРµСЂРЅСЏРєР° РµСЃС‚СЊ " << poisk   << "СЉСЉСЉСЉСЉСЉСЉСЉСЉСЉСЉ"<< endl;
                     }else if(coordinate[1][0]==coordinate[1][1] && (coordinate[1][1]==coordinate[1][2] || coordinate[1][2]==-1)){
                         for(int x=0; x<9; x++)
                             if(x!=coordinate[0][0] && x!=coordinate[0][1] && (x!=coordinate[0][2] || coordinate[0][2]==-1))
@@ -166,7 +166,7 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
                                     delete_from_arr(variants+x*90+coordinate[1][0]*10, poisk);
                                     returner='t';
                                 }
-                                //cout << "В области" << coordinate[0][0]/3 << " " <<  coordinate[1][0]/3 <<  "  в столбце " << coordinate[1][0] << " наверняка есть " << poisk << endl;
+                                //cout << "Р’ РѕР±Р»Р°СЃС‚Рё" << coordinate[0][0]/3 << " " <<  coordinate[1][0]/3 <<  "  РІ СЃС‚РѕР»Р±С†Рµ " << coordinate[1][0] << " РЅР°РІРµСЂРЅСЏРєР° РµСЃС‚СЊ " << poisk << endl;
 
                     }
                 }
@@ -176,13 +176,13 @@ char search_candidate_in_square(int *sudoku, int *variants){//поиск кандитатов в
     return returner;
 }
 
-void delete_for_hidden_pair(const int cn, int *variants, const int *information, const int *combo, char &returner){//проверка комбинаций на скрытые пары
+void delete_for_hidden_pair(const int cn, int *variants, const int *information, const int *combo, char &returner){//РїСЂРѕРІРµСЂРєР° РєРѕРјР±РёРЅР°С†РёР№ РЅР° СЃРєСЂС‹С‚С‹Рµ РїР°СЂС‹
 
 
     int count_number_in_arr=0;
     int count_xy_in_arr=0;
     int inf_for_del[10]={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-    for(int n=0; n<cn; n++){//просматриваем все числа из комбинации
+    for(int n=0; n<cn; n++){//РїСЂРѕСЃРјР°С‚СЂРёРІР°РµРј РІСЃРµ С‡РёСЃР»Р° РёР· РєРѕРјР±РёРЅР°С†РёРё
 
         inf_for_del[count_xy_in_arr]=*(combo+n);
         count_xy_in_arr+=1;
@@ -190,7 +190,7 @@ void delete_for_hidden_pair(const int cn, int *variants, const int *information,
         if(*(information+10*(*(combo+n)-1))>cn)
             return;
 
-        for(int k=1; k<=*(information+10*(*(combo+n)-1)); k++)//каждая xy для каждого числа
+        for(int k=1; k<=*(information+10*(*(combo+n)-1)); k++)//РєР°Р¶РґР°СЏ xy РґР»СЏ РєР°Р¶РґРѕРіРѕ С‡РёСЃР»Р°
             for(int b=5; b<10; b++){
                 if(*(inf_for_del+b)==*(information+10*(*(combo+n)-1)+k))
                     break;
@@ -207,26 +207,26 @@ void delete_for_hidden_pair(const int cn, int *variants, const int *information,
 
 
     if(inf_for_del[cn]==-1 && inf_for_del[cn-1]!=-1 && inf_for_del[5+cn]==-1 && inf_for_del[4+cn]!=-1){
-                    //удаление лишних вариантов из клеток со скрытыми парами/тройками/четверками
+                    //СѓРґР°Р»РµРЅРёРµ Р»РёС€РЅРёС… РІР°СЂРёР°РЅС‚РѕРІ РёР· РєР»РµС‚РѕРє СЃРѕ СЃРєСЂС‹С‚С‹РјРё РїР°СЂР°РјРё/С‚СЂРѕР№РєР°РјРё/С‡РµС‚РІРµСЂРєР°РјРё
                     for(int j=5; j<5+cn; j++){
                         for(int n=1; n<10; n++)
-                            if(n!=inf_for_del[0] && n!=inf_for_del[1] && n!=inf_for_del[2] && n!=inf_for_del[3])//если можно удалять n
+                            if(n!=inf_for_del[0] && n!=inf_for_del[1] && n!=inf_for_del[2] && n!=inf_for_del[3])//РµСЃР»Рё РјРѕР¶РЅРѕ СѓРґР°Р»СЏС‚СЊ n
                                 if(search_in_arr(variants+inf_for_del[j]*10, n, 1, 1)){
                                     delete_from_arr(variants+inf_for_del[j]*10, n);
                                     returner='t';
-                                    //cout << "удаление лишних вариантов из клеток со скрытыми " << cn << "-ками" << endl;
+                                    //cout << "СѓРґР°Р»РµРЅРёРµ Р»РёС€РЅРёС… РІР°СЂРёР°РЅС‚РѕРІ РёР· РєР»РµС‚РѕРє СЃРѕ СЃРєСЂС‹С‚С‹РјРё " << cn << "-РєР°РјРё" << endl;
                                 }
                     }
                 }
 
 }
-void search_hidden_pair_in_arr(int *variants, char &returner){//составление комбинаций
+void search_hidden_pair_in_arr(int *variants, char &returner){//СЃРѕСЃС‚Р°РІР»РµРЅРёРµ РєРѕРјР±РёРЅР°С†РёР№
     int counter(0), numbers[9], inf_for_del[10];//
-    int information[9][10];//information[number-1][0]->сколько раз встречается цифра, остальные 4 ячейки для хранения адресов
-    int combo[4];//числа которые учавствуют в комбинации
+    int information[9][10];//information[number-1][0]->СЃРєРѕР»СЊРєРѕ СЂР°Р· РІСЃС‚СЂРµС‡Р°РµС‚СЃСЏ С†РёС„СЂР°, РѕСЃС‚Р°Р»СЊРЅС‹Рµ 4 СЏС‡РµР№РєРё РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р°РґСЂРµСЃРѕРІ
+    int combo[4];//С‡РёСЃР»Р° РєРѕС‚РѕСЂС‹Рµ СѓС‡Р°РІСЃС‚РІСѓСЋС‚ РІ РєРѕРјР±РёРЅР°С†РёРё
     bool sovpadenie[4];
 
-    for(int a=0; a<9; a++){//удаление информации от прошлой строки
+    for(int a=0; a<9; a++){//СѓРґР°Р»РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё РѕС‚ РїСЂРѕС€Р»РѕР№ СЃС‚СЂРѕРєРё
             for(int b=0; b<10; b++){
                 if(b==0)
                     information[a][b]=0;
@@ -234,10 +234,10 @@ void search_hidden_pair_in_arr(int *variants, char &returner){//составление комб
                 information[a][b]=-1;
             }
         }
-    for(int j=0; j<9; j++){//получение информации о новой строке
+    for(int j=0; j<9; j++){//РїРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РЅРѕРІРѕР№ СЃС‚СЂРѕРєРµ
         for(int k=1; k<=*(variants+j*10); k++){
             information[*(variants+j*10+k)-1][0]+=1;
-            information[*(variants+j*10+k)-1/*вариант-1*/][information[*(variants+j*10+k)-1][0]/*запись в конец*/]=j;
+            information[*(variants+j*10+k)-1/*РІР°СЂРёР°РЅС‚-1*/][information[*(variants+j*10+k)-1][0]/*Р·Р°РїРёСЃСЊ РІ РєРѕРЅРµС†*/]=j;
         }
     }
     for(int k=0; k<9; k++)
@@ -248,27 +248,27 @@ void search_hidden_pair_in_arr(int *variants, char &returner){//составление комб
 
     /*cout << "information " << endl;
     for(int j=0; j<9; j++){
-        cout << "цифра " << j+1 << "\t" << information[j][0] << "  ";
+        cout << "С†РёС„СЂР° " << j+1 << "\t" << information[j][0] << "  ";
         for(int k=1; k<10; k++){
             cout << information[j][k] << " ";
         }
         cout << endl;
     }*/
 
-    for(int cn=2; cn<5; cn++){//анализ информации о строке cn->количество цифр в комбинации
-        for(int a=0; a<=counter-cn; a++){//подбор первого числа из комбинации
+    for(int cn=2; cn<5; cn++){//Р°РЅР°Р»РёР· РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃС‚СЂРѕРєРµ cn->РєРѕР»РёС‡РµСЃС‚РІРѕ С†РёС„СЂ РІ РєРѕРјР±РёРЅР°С†РёРё
+        for(int a=0; a<=counter-cn; a++){//РїРѕРґР±РѕСЂ РїРµСЂРІРѕРіРѕ С‡РёСЃР»Р° РёР· РєРѕРјР±РёРЅР°С†РёРё
             combo[1]=combo[2]=combo[3]=-1;
             combo[0]=numbers[a];
             for(int b=a+1; b<=counter+1-cn; b++){
                 combo[1]=numbers[b];
                 if(cn==2){
                     delete_for_hidden_pair(cn, variants, &information[0][0], &combo[0], returner);
-                }else{//eсли ищется тройка или четвёрка
+                }else{//eСЃР»Рё РёС‰РµС‚СЃСЏ С‚СЂРѕР№РєР° РёР»Рё С‡РµС‚РІС‘СЂРєР°
                     for(int c=b+1; c<=counter+2-cn; c++){
                         combo[2]=numbers[c];
                         if(cn==3)
                             delete_for_hidden_pair(cn, variants, &information[0][0], &combo[0], returner);
-                        else{//eсли ищется четвёрка
+                        else{//eСЃР»Рё РёС‰РµС‚СЃСЏ С‡РµС‚РІС‘СЂРєР°
                             for(int d=c+1; d<=counter+3-cn; d++){
                                 combo[3]=numbers[d];
                                 delete_for_hidden_pair(cn, variants, &information[0][0], &combo[0], returner);
@@ -281,27 +281,27 @@ void search_hidden_pair_in_arr(int *variants, char &returner){//составление комб
         }//for a
     }//end analiz
 }
-char test_on_hidden_pair(int *sudoku, int *variants){//перебор строк/столбцов/областей
+char test_on_hidden_pair(int *sudoku, int *variants){//РїРµСЂРµР±РѕСЂ СЃС‚СЂРѕРє/СЃС‚РѕР»Р±С†РѕРІ/РѕР±Р»Р°СЃС‚РµР№
 
     char returner='f';
     int copy_variants[9][10];
 
-    for(int i=0; i<9; i++){//просматриваем каждую строку
+    for(int i=0; i<9; i++){//РїСЂРѕСЃРјР°С‚СЂРёРІР°РµРј РєР°Р¶РґСѓСЋ СЃС‚СЂРѕРєСѓ
         search_hidden_pair_in_arr(variants+90*i, returner);
     }
 
-    for(int j=0; j<9; j++){//проверяем каждый столбец
-        for(int i=0; i<9; i++)//создаем копию
+    for(int j=0; j<9; j++){//РїСЂРѕРІРµСЂСЏРµРј РєР°Р¶РґС‹Р№ СЃС‚РѕР»Р±РµС†
+        for(int i=0; i<9; i++)//СЃРѕР·РґР°РµРј РєРѕРїРёСЋ
             for(int k=0; k<10; k++)
                 copy_variants[i][k]=*(variants+90*i+10*j+k);
         search_hidden_pair_in_arr(&copy_variants[0][0], returner);
-        for(int i=0; i<9; i++)//переносим изменения
+        for(int i=0; i<9; i++)//РїРµСЂРµРЅРѕСЃРёРј РёР·РјРµРЅРµРЅРёСЏ
             for(int k=0; k<10; k++)
                 *(variants+90*i+10*j+k)=copy_variants[i][k];
     }
 
     for(int a=0; a<3; a++)
-        for(int b=0; b<3; b++){//просматриваем каждый квадрат
+        for(int b=0; b<3; b++){//РїСЂРѕСЃРјР°С‚СЂРёРІР°РµРј РєР°Р¶РґС‹Р№ РєРІР°РґСЂР°С‚
 
             for(int x=a*3; x<a*3+3; x++)
                 for(int y=b*3; y<b*3+3; y++)
