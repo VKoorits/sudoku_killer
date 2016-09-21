@@ -94,7 +94,7 @@ setlocale(0, "rus");
 
             }while(1);
         }else if(menu=='2'){
-            cout << "\t\t*****SUDOKU KILLER******\nDecision sudoku\n\nEnter from keyboard (Enter strings without space)" << endl;
+            cout << "\t\t*****SUDOKU KILLER******\nDecision sudoku\n\nEnter from keyboard (Please, enter strings without space)" << endl;
             read_sudoku(&sudoku[0][0], cin, 'c');
             cout << "\t\t*****SUDOKU KILLER******\nDecision sudoku\n\nEntered sudoku";
             system("cls");
